@@ -3,3 +3,8 @@ Creates a package for Linux using the already installed package and its binary f
 
 ## Usage:
 rvrspkg PKGNAME
+
+## Dependencies:
+bash \
+coreutils \
+pacman-contrib
