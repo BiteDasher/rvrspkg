@@ -19,11 +19,19 @@ if [ -f $DBPKG/install ]; then rvrspkginst=1; fi
 rvrspkgname="$(grep -A2 %NAME% $DBPKG/desc | head -2 | tail -1)"
 rvrspkgver="$(grep -A2 %VERSION% $DBPKG/desc | head -2 | tail -1 | rev | cut -d"-" -f2 | rev)"
 rvrspkgrel="$(grep -A2 %VERSION% $DBPKG/desc | head -2 | tail -1 | rev | cut -d"-" -f1 | rev)"
-rvrspkgdesc="$(grep -A2 %DESC% $DBPKG/desc | head -2 | tail -1)"
+rvrspkgdesc="$(cat $DBPKG/desc | sed -n '/%DESC%/,/^ *$/p' | sed '$ d' | sed '1d')"
 rvrspkgurl="$(grep -A2 %URL% $DBPKG/desc | head -2 | tail -1)"
 rvrspkgarch="$(grep -A2 %ARCH% $DBPKG/desc | head -2 | tail -1)"
 rvrspkglic="$(grep -A2 %LICENSE% $DBPKG/desc | head -2 | tail -1)"
-rvrspkgdeps="$(pactree -d 1 -l $1 | tail -n +2)"
+rvrspkgdeps="$(cat $DBPKG/desc | sed -n '/%DEPENDS%/,/^ *$/p' | sed '$ d' | sed '1d')"
+if [ "$(grep -x %OUTDEPENDS% $DBPKG/desc)" ]; then
+rvrspkgoutdeps=yes; fi
+if [ "$(grep -x %CONFLICTS% $DBPKG/desc)" ]; then
+rvrspkgcfl="$(cat $DBPKG/desc | sed -n '/%CONFLICTS%/,/^ *$/p' | sed '$ d' | sed '1d')"; fi
+if [ "$(grep -x %REPLACES% $DBPKG/desc)" ]; then
+rvrspkgre="$(cat $DBPKG/desc | sed -n '/%REPLACES%/,/^ *$/p' | sed '$ d' | sed '1d')"; fi
+if [ "$(grep -x %PROVIDES% $DBPKG/desc)" ]; then
+rvrspkgpro="$(cat $DBPKG/desc | sed -n '/%PROVIDES%/,/^ *$/p' | sed '$ d' | sed '1d')"; fi
 cd $pkgbuildstore
 touch PKGBUILD
 echo pkgname=$rvrspkgname >> PKGBUILD
@@ -31,9 +39,16 @@ echo pkgver=$rvrspkgver >> PKGBUILD
 echo pkgrel=$rvrspkgrel >> PKGBUILD
 echo pkgdesc="\"$rvrspkgdesc\"" >> PKGBUILD
 echo url="\"$rvrspkgurl\"" >> PKGBUILD
-echo arch="($rvrspkgarch)" >> PKGBUILD
-echo license="($rvrspkglic)" >> PKGBUILD
-echo depends="($rvrspkgdeps)" >> PKGBUILD
+echo arch="(\'$rvrspkgarch\')" >> PKGBUILD
+echo license="(\'$rvrspkglic\')" >> PKGBUILD
+[ "$rvrspkgdeps" ] && echo depends="($rvrspkgdeps)" >> PKGBUILD
+if [ "$rvrspkgoutdeps" ]; then
+echo "provides=(" >> PKGBUILD
+echo $(cat $DBPKG/desc | sed -n '/%OUTDEPENDS%/,/^ *$/p' | sed '$ d' | sed '1d') >> PKGBUILD
+echo ")" >> PKGBUILD; fi
+[ "$rvrspkgcfl" ] && echo conflicts="($rvrspkgcfl)" >> PKGBUILD
+[ "$rvrspkgre" ] && echo replaces="($rvrspkgre)" >> PKGBUILD
+[ "$rvrspkgpro" ] && echo provides="($rvrspkgpro)" >> PKGBUILD
 if [ $rvrspkginst ]; then
 cp $DBPKG/install $1.install
 echo install=$1.install >> PKGBUILD
