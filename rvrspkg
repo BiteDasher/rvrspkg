@@ -1,0 +1,50 @@
+#!/bin/bash
+if ! [ $1 ]; then echo "Write what package you need to make"; exit 1; else
+case $1 in
+help|-h|--help)
+echo -e "Creates a package for Linux using the already installed package and its binary files\nUsage: rvrspkg PKGNAME\nCustom variables: \033[1;31mPACDB\033[0m for location of pacman database; \033[1;31mpkgbuildstore\033[0m for location of PKGBUILD directory\nMade by: Artemii Sudakov\n    https://github.com/BiteDasher\n    https://t.me/heveat"; exit 0
+;;
+*)
+true
+;;
+esac; fi
+if ! [ "$(pacman -Q $1)" ]; then echo "Error"; exit 1; fi
+pkgpath=""$1"-"$(pacman -Q $1 | cut -d" " -f2-)""
+if ! [ $pkgbuildstore ]; then pkgbuildstore="$PWD/rvrspkg-$1"; fi
+if [ -d "$pkgbuildstore" ]; then rm -rf $pkgbuildstore; mkdir $pkgbuildstore; else mkdir $pkgbuildstore; fi
+if ! [ $PACDB ]; then PACDB="/var/lib/pacman/local"; fi
+if ! [ -d "$PACDB/$pkgpath" ]; then echo "Database directory of package doesn't exists"; exit 1; fi
+DBPKG="$PACDB/$pkgpath"
+if [ -f $DBPKG/install ]; then rvrspkginst=1; fi
+rvrspkgname="$(grep -A2 %NAME% $DBPKG/desc | head -2 | tail -1)"
+rvrspkgver="$(grep -A2 %VERSION% $DBPKG/desc | head -2 | tail -1 | rev | cut -d"-" -f2 | rev)"
+rvrspkgrel="$(grep -A2 %VERSION% $DBPKG/desc | head -2 | tail -1 | rev | cut -d"-" -f1 | rev)"
+rvrspkgdesc="$(grep -A2 %DESC% $DBPKG/desc | head -2 | tail -1)"
+rvrspkgurl="$(grep -A2 %URL% $DBPKG/desc | head -2 | tail -1)"
+rvrspkgarch="$(grep -A2 %ARCH% $DBPKG/desc | head -2 | tail -1)"
+rvrspkglic="$(grep -A2 %LICENSE% $DBPKG/desc | head -2 | tail -1)"
+rvrspkgdeps="$(pactree -d 1 -l $1 | tail -n +2)"
+cd $pkgbuildstore
+touch PKGBUILD
+echo pkgname=$rvrspkgname >> PKGBUILD
+echo pkgver=$rvrspkgver >> PKGBUILD
+echo pkgrel=$rvrspkgrel >> PKGBUILD
+echo pkgdesc="\"$rvrspkgdesc\"" >> PKGBUILD
+echo url="\"$rvrspkgurl\"" >> PKGBUILD
+echo arch="($rvrspkgarch)" >> PKGBUILD
+echo license="($rvrspkglic)" >> PKGBUILD
+echo depends="($rvrspkgdeps)" >> PKGBUILD
+if [ $rvrspkginst ]; then
+cp $DBPKG/install $1.install
+echo install=$1.install >> PKGBUILD
+fi
+pacman -Ql $1 | cut -d" " -f2- > .prepare
+echo "package() {" >> PKGBUILD
+while read -r pacmanfile; do
+if [ -d "$pacmanfile" ]; then
+echo "mkdir -m $(stat -c '%a' $pacmanfile) -p \$pkgdir${pacmanfile}" >> PKGBUILD; else
+echo "install -m $(stat -c '%a' $pacmanfile) ${pacmanfile} \$pkgdir${pacmanfile}" >> PKGBUILD; fi
+done < .prepare
+echo } >> PKGBUILD
+rm $pkgbuildstore/.prepare
+echo "Done!"
