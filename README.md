@@ -1,5 +1,5 @@
 # rvrspkg
-Creates a package for Linux using the already installed package and its binary files
+Creates a package for Arch Linux using the already installed package and its binary files
 
 ## Usage:
 rvrspkg PKGNAME
