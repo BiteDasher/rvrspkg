@@ -8,3 +8,6 @@ rvrspkg PKGNAME
 bash \
 coreutils \
 pacman-contrib
+
+## AUR git clone link:
+https://aur.archlinux.org/rvrspkg.git
