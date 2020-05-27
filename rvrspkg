@@ -24,8 +24,8 @@ rvrspkgurl="$(grep -A2 %URL% $DBPKG/desc | head -2 | tail -1)"
 rvrspkgarch="$(grep -A2 %ARCH% $DBPKG/desc | head -2 | tail -1)"
 rvrspkglic="$(grep -A2 %LICENSE% $DBPKG/desc | head -2 | tail -1)"
 rvrspkgdeps="$(cat $DBPKG/desc | sed -n '/%DEPENDS%/,/^ *$/p' | sed '$ d' | sed '1d')"
-if [ "$(grep -x %OUTDEPENDS% $DBPKG/desc)" ]; then
-rvrspkgoutdeps=yes; fi
+if [ "$(grep -x %OPTDEPENDS% $DBPKG/desc)" ]; then
+rvrspkgoptdeps=yes; fi
 if [ "$(grep -x %CONFLICTS% $DBPKG/desc)" ]; then
 rvrspkgcfl="$(cat $DBPKG/desc | sed -n '/%CONFLICTS%/,/^ *$/p' | sed '$ d' | sed '1d')"; fi
 if [ "$(grep -x %REPLACES% $DBPKG/desc)" ]; then
@@ -42,9 +42,9 @@ echo url="\"$rvrspkgurl\"" >> PKGBUILD
 echo arch="('$rvrspkgarch')" >> PKGBUILD
 echo license="('$rvrspkglic')" >> PKGBUILD
 [ "$rvrspkgdeps" ] && echo depends="($rvrspkgdeps)" >> PKGBUILD
-if [ "$rvrspkgoutdeps" ]; then
-echo "provides=(" >> PKGBUILD
-echo $(cat $DBPKG/desc | sed -n '/%OUTDEPENDS%/,/^ *$/p' | sed '$ d' | sed '1d') >> PKGBUILD
+if [ "$rvrspkgoptdeps" ]; then
+echo "optdepends=(" >> PKGBUILD
+echo $(cat $DBPKG/desc | sed -n '/%OPTDEPENDS%/,/^ *$/p' | sed '$ d' | sed '1d') >> PKGBUILD
 echo ")" >> PKGBUILD; fi
 [ "$rvrspkgcfl" ] && echo conflicts="($rvrspkgcfl)" >> PKGBUILD
 [ "$rvrspkgre" ] && echo replaces="($rvrspkgre)" >> PKGBUILD
