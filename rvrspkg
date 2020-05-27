@@ -35,7 +35,10 @@ rvrspkgpro="$(cat $DBPKG/desc | sed -n '/%PROVIDES%/,/^ *$/p' | sed '$ d' | sed 
 cd $pkgbuildstore
 touch PKGBUILD
 echo pkgname=$rvrspkgname >> PKGBUILD
-echo pkgver=$rvrspkgver >> PKGBUILD
+if [ "$(echo $rvrspkgver | grep ":")" ]; then
+echo pkgver=$(echo $rvrspkgver | cut -d":" -f2-) >> PKGBUILD
+echo epoch=$(echo $rvrspkgver | cut -d":" -f1) >> PKGBUILD; else
+echo pkgver=$rvrspkgver >> PKGBUILD; fi
 echo pkgrel=$rvrspkgrel >> PKGBUILD
 echo pkgdesc="\"$rvrspkgdesc\"" >> PKGBUILD
 echo url="\"$rvrspkgurl\"" >> PKGBUILD
