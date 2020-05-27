@@ -39,7 +39,7 @@ echo pkgver=$rvrspkgver >> PKGBUILD
 echo pkgrel=$rvrspkgrel >> PKGBUILD
 echo pkgdesc="\"$rvrspkgdesc\"" >> PKGBUILD
 echo url="\"$rvrspkgurl\"" >> PKGBUILD
-echo arch="('$rvrspkgarch')" >> PKGBUILD
+echo arch="($rvrspkgarch)" >> PKGBUILD
 echo license="('$rvrspkglic')" >> PKGBUILD
 [ "$rvrspkgdeps" ] && echo depends="($rvrspkgdeps)" >> PKGBUILD
 if [ "$rvrspkgoptdeps" ]; then
