@@ -2,7 +2,7 @@
 if ! [ $1 ]; then echo "Write what package you need to make"; exit 1; else
 case $1 in
 help|-h|--help)
-echo -e "Creates a package for Arch Linux using the already installed package and its binary files\nUsage: rvrspkg PKGNAME\nCustom variables: \033[1;31mPACDB\033[0m for location of pacman database; \033[1;31mpkgbuildstore\033[0m for location of PKGBUILD directory\nMade by: Artemii Sudakov\n    https://github.com/BiteDasher\n    https://t.me/heveat"; exit 0
+echo -e "Creates a PKGBUILD for Arch Linux using the already installed package files\nUsage: rvrspkg PKGNAME\nCustom variables: \033[1;31mPACDB\033[0m for location of pacman database; \033[1;31mpkgbuildstore\033[0m for location of PKGBUILD directory\nMade by: Artemii Sudakov\n    https://github.com/BiteDasher\n    https://t.me/heveat"; exit 0
 ;;
 *)
 true
