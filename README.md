@@ -7,7 +7,7 @@ rvrspkg PKGNAME
 ## Dependencies:
 bash \
 coreutils \
-pacman-contrib
+sed
 
 ## AUR git clone link:
 https://aur.archlinux.org/rvrspkg.git
