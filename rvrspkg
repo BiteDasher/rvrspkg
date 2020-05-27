@@ -44,7 +44,7 @@ echo license="('$rvrspkglic')" >> PKGBUILD
 [ "$rvrspkgdeps" ] && echo depends="($rvrspkgdeps)" >> PKGBUILD
 if [ "$rvrspkgoptdeps" ]; then
 echo "optdepends=(" >> PKGBUILD
-echo $(cat $DBPKG/desc | sed -n '/%OPTDEPENDS%/,/^ *$/p' | sed '$ d' | sed '1d') >> PKGBUILD
+echo "$(cat $DBPKG/desc | sed -n '/%OPTDEPENDS%/,/^ *$/p' | sed '$ d' | sed '1d')" >> PKGBUILD
 echo ")" >> PKGBUILD; fi
 [ "$rvrspkgcfl" ] && echo conflicts="($rvrspkgcfl)" >> PKGBUILD
 [ "$rvrspkgre" ] && echo replaces="($rvrspkgre)" >> PKGBUILD
