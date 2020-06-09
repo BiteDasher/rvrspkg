@@ -60,8 +60,8 @@ pacman -Ql $1 | cut -d" " -f2- > .prepare
 echo "package() {" >> PKGBUILD
 while read -r pacmanfile; do
 if [ -d "$pacmanfile" ]; then
-echo "mkdir -m $(stat -c '%a' $pacmanfile) -p \$pkgdir${pacmanfile}" >> PKGBUILD; else
-echo "install -m $(stat -c '%a' $pacmanfile) ${pacmanfile} \$pkgdir${pacmanfile}" >> PKGBUILD; fi
+echo "mkdir -m $(stat -c '%a' $pacmanfile) -p \"\$pkgdir${pacmanfile}\"" >> PKGBUILD; else
+echo "install -m $(stat -c '%a' $pacmanfile) \"${pacmanfile}\" \"\$pkgdir${pacmanfile}\"" >> PKGBUILD; fi
 done < .prepare
 echo } >> PKGBUILD
 rm $pkgbuildstore/.prepare
