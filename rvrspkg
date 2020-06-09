@@ -21,8 +21,8 @@ rvrspkgver="$(grep -A2 %VERSION% $DBPKG/desc | head -2 | tail -1 | rev | cut -d"
 rvrspkgrel="$(grep -A2 %VERSION% $DBPKG/desc | head -2 | tail -1 | rev | cut -d"-" -f1 | rev)"
 rvrspkgdesc="$(cat $DBPKG/desc | sed -n '/%DESC%/,/^ *$/p' | sed '$ d' | sed '1d')"
 rvrspkgurl="$(grep -A2 %URL% $DBPKG/desc | head -2 | tail -1)"
-rvrspkgarch="$(grep -A2 %ARCH% $DBPKG/desc | head -2 | tail -1 | sed "s/.*/\'&\'/")"
-rvrspkglic="$(grep -A2 %LICENSE% $DBPKG/desc | head -2 | tail -1 | sed "s/.*/\'&\'/")"
+rvrspkgarch="$(grep -A2 %ARCH% $DBPKG/desc | head -2 | tail -1)"
+rvrspkglic="$(grep -A2 %LICENSE% $DBPKG/desc | head -2 | tail -1)"
 rvrspkgdeps="$(cat $DBPKG/desc | sed -n '/%DEPENDS%/,/^ *$/p' | sed '$ d' | sed '1d' | sed "s/.*/\'&\'/")"
 if [ "$(grep -x %OPTDEPENDS% $DBPKG/desc)" ]; then
 rvrspkgoptdeps=yes; fi
