@@ -61,7 +61,9 @@ echo "package() {" >> PKGBUILD
 while read -r pacmanfile; do
 if [ -d "$pacmanfile" ]; then
 echo "mkdir -m $(stat -c '%a' $pacmanfile) -p \"\$pkgdir${pacmanfile}\"" >> PKGBUILD; else
-echo "install -m $(stat -c '%a' $pacmanfile) \"${pacmanfile}\" \"\$pkgdir${pacmanfile}\"" >> PKGBUILD; fi
+if [ -L "$pacmanfile" ]; then
+echo "ln -s \"${pacmanfile}\" \"\$pkgdir$(ls -l "${pacmanfile}" | rev | cut -d" " -f1 | rev)\"" >> PKGBUILD; else
+echo "install -m $(stat -c '%a' $pacmanfile) \"${pacmanfile}\" \"\$pkgdir${pacmanfile}\"" >> PKGBUILD; fi; fi
 done < .prepare
 echo } >> PKGBUILD
 rm $pkgbuildstore/.prepare
