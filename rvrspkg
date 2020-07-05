@@ -62,7 +62,10 @@ while read -r pacmanfile; do
 if [ -d "$pacmanfile" ]; then
 echo "mkdir -m $(stat -c '%a' $pacmanfile) -p \"\$pkgdir${pacmanfile}\"" >> PKGBUILD; else
 if [ -L "$pacmanfile" ]; then
-echo "ln -s \"${pacmanfile}\" \"\$pkgdir$(ls -l "${pacmanfile}" | rev | cut -d" " -f1 | rev)\"" >> PKGBUILD; else
+if [ "$(stat -c %N "$pacmanfile" | sed "s/'//g" | cut -d" " -f3- | sed "s/[-\.\_a-zA-Z0-9]//g" | echo $(( $(wc -c) -1 )))" != "$(stat -c %N "$pacmanfile" | sed "s/'//g" | cut -d" " -f1 | sed "s/[-\.\_a-zA-Z0-9]//g" | echo $(( $(wc -c) -1 )))" ]; then
+pacmanlink="$(dirname $(stat -c %N $pacmanfile | sed "s/'//g" | cut -d" " -f1)/$(stat -c %N "$pacmanfile" | sed "s/'//g" | cut -d" " -f3- | rev | cut -d"/" -f1 | rev))"; else
+pacmanlink="$(stat -c %N "${pacmanfile}" | sed "s/'//g" | cut -d" " -f3-)"; fi
+echo "ln -s \"${pacmanfile}\" \"\$pkgdir${pacmanlink}\"" >> PKGBUILD; else
 echo "install -m $(stat -c '%a' $pacmanfile) \"${pacmanfile}\" \"\$pkgdir${pacmanfile}\"" >> PKGBUILD; fi; fi
 done < .prepare
 echo } >> PKGBUILD
