@@ -59,7 +59,7 @@ fi
 pacman -Ql $1 | cut -d" " -f2- > .prepare
 echo "package() {" >> PKGBUILD
 while read -r pacmanfile; do
-if [ -d "$pacmanfile" ]; then
+if [[ -d "$pacmanfile" && ! -L "$pacmanfile" ]]; then
 echo "mkdir -m $(stat -c '%a' $pacmanfile) -p \"\$pkgdir${pacmanfile}\"" >> PKGBUILD; else
 if [ -L "$pacmanfile" ]; then
 if [ "$(stat -c %N "$pacmanfile" | sed "s/'//g" | cut -d" " -f3- | sed "s/[-\.\_a-zA-Z0-9]//g" | echo $(( $(wc -c) -1 )))" != "$(stat -c %N "$pacmanfile" | sed "s/'//g" | cut -d" " -f1 | sed "s/[-\.\_a-zA-Z0-9]//g" | echo $(( $(wc -c) -1 )))" ]; then
