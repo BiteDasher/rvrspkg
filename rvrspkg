@@ -66,7 +66,7 @@ if [ "$(stat -c %N "$pacmanfile" | sed "s/'//g" | cut -d" " -f3- | sed "s/[-\.\_
 [ "$(stat -c %N "$pacmanfile" | sed "s/'//g" | cut -d" " -f3- | cut -c1)" == "/" ] && pacmanlink="$(stat -c %N "${pacmanfile}" | sed "s/'//g" | cut -d" " -f3-)" ||
 pacmanlink="$(echo $(dirname $(stat -c %N "$pacmanfile" | sed "s/'//g" | cut -d" " -f1))/$(stat -c %N "$pacmanfile" | sed "s/'//g" | cut -d" " -f3- | rev | cut -d"/" -f1 | rev))"; else
 pacmanlink="$(stat -c %N "${pacmanfile}" | sed "s/'//g" | cut -d" " -f3-)"; fi
-echo "ln -s \"${pacmanfile}\" \"\$pkgdir${pacmanlink}\"" >> PKGBUILD; else
+echo "ln -s \"${pacmanlink}\" \"\$pkgdir${pacmanfile}\"" >> PKGBUILD; else
 echo "install -m $(stat -c '%a' $pacmanfile) \"${pacmanfile}\" \"\$pkgdir${pacmanfile}\"" >> PKGBUILD; fi; fi
 done < .prepare
 echo } >> PKGBUILD
